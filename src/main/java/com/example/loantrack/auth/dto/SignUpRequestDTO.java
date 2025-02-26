@@ -1,31 +1,28 @@
-package com.example.loantrack.user;
+package com.example.loantrack.auth.dto;
 
-import com.example.loantrack.common.BaseEntity;
+import com.example.loantrack.user.Role;
 import com.example.loantrack.validation.countryCode.ValidCountryCode;
 import com.example.loantrack.validation.phoneNumber.ValidPhoneNumber;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "users")
-public class User extends BaseEntity {
+public class SignUpRequestDTO {
 
-    @Column(nullable = false)
+    @NotBlank(message = "First name is required !")
     private String firstName;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Last name is required !")
     private String lastName;
 
-    @Column(nullable = false, unique = true, length = 10)
-    @ValidPhoneNumber
-    private String phoneNumber;
-
-    @Column(nullable = false)
+    @NotBlank(message = "Country code is required !")
     @ValidCountryCode
     private String countryCode;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotBlank(message = "Phone number is required !")
+    @ValidPhoneNumber
+    private String phoneNumber;
+
+    @NotNull(message = "Role is required !")
     private Role role;
 
     public String getFirstName() {
@@ -44,20 +41,20 @@ public class User extends BaseEntity {
         this.lastName = lastName;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public String getCountryCode() {
         return countryCode;
     }
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Role getRole() {
