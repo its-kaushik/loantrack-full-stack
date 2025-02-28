@@ -8,8 +8,22 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LoantrackApplication {
 
     public static void main(String[] args) {
-        Dotenv dotenv = Dotenv.configure().directory("/app").load();
-        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+        try {
+            // Try loading from /app first (Docker environment)
+            Dotenv dotenv = Dotenv.configure().directory("/app").load();
+            dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+        } catch (Exception e) {
+            try {
+                // If that fails, try loading from the current directory (local environment)
+                Dotenv dotenv = Dotenv.configure().load();
+                dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+            } catch (Exception innerEx) {
+                // Log that .env file couldn't be loaded, but continue startup
+                System.out.println("Warning: Could not load .env file. Continuing with environment variables.");
+            }
+        }
+        //Dotenv dotenv = Dotenv.configure().directory("/app").load();
+        //dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
 
         SpringApplication.run(LoantrackApplication.class, args);
     }
