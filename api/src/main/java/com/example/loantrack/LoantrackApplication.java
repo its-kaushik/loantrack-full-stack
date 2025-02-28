@@ -1,13 +1,17 @@
 package com.example.loantrack;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class LoantrackApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LoantrackApplication.class, args);
-	}
+    public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.configure().directory("/app").load();
+        dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+
+        SpringApplication.run(LoantrackApplication.class, args);
+    }
 
 }

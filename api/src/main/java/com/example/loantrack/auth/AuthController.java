@@ -24,7 +24,7 @@ public class AuthController {
 
     }
 
-    @GetMapping("/get-opt")
+    @PostMapping("get-otp")
     public ResponseEntity<ApiResponse<String>> getOtp(@Valid @RequestBody GetOtpRequestDTO getOtpRequestDTO){
         String otp = authService.getOtp(getOtpRequestDTO);
 
