@@ -20,6 +20,9 @@ public class Company extends BaseEntity {
         this.logoUrl = logoUrl;
     }
 
+    public Company() {
+    }
+
     public String getName() {
         return name;
     }

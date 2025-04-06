@@ -1,6 +1,7 @@
 package com.example.loantrack.auth;
 
 import com.example.loantrack.auth.dto.GetOtpRequestDTO;
+import com.example.loantrack.auth.dto.LoginRequestDTO;
 import com.example.loantrack.auth.dto.SignUpRequestDTO;
 import com.example.loantrack.common.ApiResponse;
 import com.example.loantrack.user.User;
@@ -24,10 +25,22 @@ public class AuthController {
 
     }
 
-    @PostMapping("get-otp")
+    @PostMapping("/get-otp")
     public ResponseEntity<ApiResponse<String>> getOtp(@Valid @RequestBody GetOtpRequestDTO getOtpRequestDTO){
         String otp = authService.getOtp(getOtpRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Otp sent sucesfully !", otp));
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Otp sent successfully !", otp));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<Object>> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO){
+
+        String token = authService.login(loginRequestDTO);
+
+        if( token == null )
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse<>(false, "Invalid phone number / otp !", null));
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Login Successfully", token));
+    }
+
 }

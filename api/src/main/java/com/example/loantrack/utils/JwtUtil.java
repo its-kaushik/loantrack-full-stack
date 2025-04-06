@@ -1,5 +1,6 @@
 package com.example.loantrack.utils;
 
+import com.example.loantrack.config.JwtProperties;
 import com.example.loantrack.user.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -7,22 +8,26 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "YOUR_SECRET_KEY_CHANGE_THIS_32CHARACTERS";
-    private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24 hours
+    private final JwtProperties jwtProperties;
 
-    public String generateToken(Role role, String userId) {
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
+
+    public String generateToken(Role role, Long userId, Long companyId) {
         try {
             return Jwts.builder()
                     .issuer("LOANTRACK")
-                    .subject(userId)
+                    .subject(String.valueOf(userId))
                     .claim("role",role)
+                    .claim("companyId",companyId)
+                    .claim("userId", userId)
                     .issuedAt(new Date())
-                    .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                    .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime()))
                     .signWith(getSigningKey(), Jwts.SIG.HS256)
                     .compact();
         } catch (Exception e) {
@@ -62,9 +67,19 @@ public class JwtUtil {
         return Role.fromString(role);
     }
 
+    public Long extractCompanyId(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("companyId", Long.class);
+    }
+
+
     // Get the signing key for JWT token
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
     }
 
 }
