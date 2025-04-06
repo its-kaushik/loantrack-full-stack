@@ -1,6 +1,7 @@
 package com.example.loantrack.user;
 
 import com.example.loantrack.common.BaseEntity;
+import com.example.loantrack.company.Company;
 import com.example.loantrack.validation.countryCode.ValidCountryCode;
 import com.example.loantrack.validation.phoneNumber.ValidPhoneNumber;
 import jakarta.persistence.*;
@@ -27,6 +28,30 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+
+    public User(String firstName, String lastName, String phoneNumber, String countryCode, Role role, Company company) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.countryCode = countryCode;
+        this.role = role;
+        this.company = company;
+    }
+
+    public User() {
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
 
     public String getFirstName() {
         return firstName;

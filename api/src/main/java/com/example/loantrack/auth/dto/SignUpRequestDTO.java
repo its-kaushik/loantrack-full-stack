@@ -22,8 +22,26 @@ public class SignUpRequestDTO {
     @ValidPhoneNumber
     private String phoneNumber;
 
-    @NotNull(message = "Role is required !")
-    private Role role;
+    @NotBlank(message = "Company name is required !")
+    private String companyName;
+
+    private String companyLogoUrl;
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyLogoUrl() {
+        return companyLogoUrl;
+    }
+
+    public void setCompanyLogoUrl(String companyLogoUrl) {
+        this.companyLogoUrl = companyLogoUrl;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -55,13 +73,5 @@ public class SignUpRequestDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 }
