@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/v1/auth/register", "/v1/auth/get-otp").permitAll()
+                        .requestMatchers("/v1/auth/register", "/v1/auth/get-otp", "/v1/auth/login").permitAll()
                         .requestMatchers("/v1/**").authenticated() // Ensures that all v1 endpoints (except auth) require authentication
                         .anyRequest().authenticated()
                 )

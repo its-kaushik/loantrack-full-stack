@@ -1,9 +1,16 @@
 package com.example.loantrack;
+import com.example.loantrack.config.JwtProperties;
+import com.example.loantrack.config.OtpProperties;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties({
+        JwtProperties.class,
+        OtpProperties.class
+})
 public class LoantrackApplication {
 
     public static void main(String[] args) {
@@ -26,5 +33,4 @@ public class LoantrackApplication {
 
         SpringApplication.run(LoantrackApplication.class, args);
     }
-
 }
