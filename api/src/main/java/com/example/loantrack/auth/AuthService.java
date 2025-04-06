@@ -1,15 +1,18 @@
 package com.example.loantrack.auth;
 
+import com.example.loantrack.auth.dto.AddUserToCompanyDTO;
 import com.example.loantrack.auth.dto.GetOtpRequestDTO;
 import com.example.loantrack.auth.dto.LoginRequestDTO;
 import com.example.loantrack.auth.dto.SignUpRequestDTO;
 import com.example.loantrack.company.Company;
 import com.example.loantrack.company.CompanyService;
+import com.example.loantrack.security.UserDetailsUtil;
 import com.example.loantrack.user.Role;
 import com.example.loantrack.user.User;
 import com.example.loantrack.user.UserMapper;
 import com.example.loantrack.user.UserService;
 import com.example.loantrack.utils.JwtUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,8 +44,7 @@ public class AuthService {
 
     public String getOtp(GetOtpRequestDTO getOtpRequestDTO) {
 
-        User user = userService.getUserByPhoneNumber(getOtpRequestDTO.getPhoneNumber())
-                .orElseThrow(() -> new NoSuchElementException("No user found with phone number: " + getOtpRequestDTO.getPhoneNumber()));
+        User user = userService.getUserByPhoneNumber(getOtpRequestDTO.getPhoneNumber());
 
         String otp = otpService.generateOtp(getOtpRequestDTO.getPhoneNumber());
 
@@ -56,8 +58,31 @@ public class AuthService {
             return null;
         }
 
-        User user = userService.getUserByPhoneNumber(loginRequestDTO.getPhoneNumber()).orElseThrow(() -> new NoSuchElementException("User not found."));
+        User user = userService.getUserByPhoneNumber(loginRequestDTO.getPhoneNumber());
 
         return jwtUtil.generateToken(user.getRole(), user.getId(), user.getCompany().getId());
+    }
+
+    public User addUserToCompany(AddUserToCompanyDTO addUserToCompanyDTO){
+
+        Long companyId = UserDetailsUtil.getCurrentCompanyId();
+        if (companyId == null) {
+            throw new IllegalStateException("Unable to retrieve company ID from authenticated user");
+        }
+
+        // Get company entity
+        Company company = companyService.getCompanyById(companyId);
+
+        // Create new user with company association
+        User newUser = new User(
+                addUserToCompanyDTO.getFirstName(),
+                addUserToCompanyDTO.getLastName(),
+                addUserToCompanyDTO.getPhoneNumber(),
+                addUserToCompanyDTO.getCountryCode(),
+                addUserToCompanyDTO.getRole(),
+                company
+        );
+
+        return userService.registerUser(newUser);
     }
 }

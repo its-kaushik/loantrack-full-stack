@@ -3,6 +3,7 @@ package com.example.loantrack.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<User> getUserByPhoneNumber(String phoneNumber) {
-        return userRepository.getUserByPhoneNumber(phoneNumber);
+    public User getUserByPhoneNumber(String phoneNumber) {
+        return userRepository.getUserByPhoneNumber(phoneNumber).orElseThrow( () -> new NoSuchElementException("No user found with phone number: " + phoneNumber));
     }
 }
