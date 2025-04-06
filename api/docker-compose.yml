@@ -1,6 +1,7 @@
 services:
   api:
     build: .
+    image: itskaushik/loantrack-api:latest
     container_name: spring-boot-app
     depends_on:
       redis:
