@@ -10,10 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/borrower")
@@ -36,9 +33,20 @@ public class BorrowerController {
         // Get company entity
         Company company = borrowerService.getCompanyById(companyId);
 
-        Borrower borrower = new Borrower(createBorrowerRequestDTO.getFirstName(), createBorrowerRequestDTO.getLastName(), createBorrowerRequestDTO.getPhoneNumber(), createBorrowerRequestDTO.getCountryCode(), createBorrowerRequestDTO.getProfilePictureUrl(), createBorrowerRequestDTO.getAadharUrl(), company);
-        borrowerService.createBorrower(borrower);
+        Borrower borrower = borrowerService.createBorrower(new Borrower(createBorrowerRequestDTO.getFirstName(), createBorrowerRequestDTO.getLastName(), createBorrowerRequestDTO.getPhoneNumber(), createBorrowerRequestDTO.getCountryCode(), createBorrowerRequestDTO.getProfilePictureUrl(), createBorrowerRequestDTO.getAadharUrl(), company));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(true, "Borrower Created Successfully !", borrower));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Borrower>> getBorrowerById(@PathVariable("id") Long borrowerId){
+        if (borrowerId == null || borrowerId <= 0) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse<>(false, "Invalid borrower ID provided", null));
+        }
+
+        Borrower borrower = borrowerService.getBorrowerById(borrowerId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<>(true, "Borrower Found Successfully !", borrower));
     }
 }

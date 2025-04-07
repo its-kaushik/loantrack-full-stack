@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class BorrowerService {
 
@@ -28,5 +30,9 @@ public class BorrowerService {
 
     public Company getCompanyById(Long companyId) {
         return companyService.getCompanyById(companyId);
+    }
+
+    public Borrower getBorrowerById(Long borrowerId) {
+        return borrowerRepository.getBorrowerById(borrowerId).orElseThrow(() -> new NoSuchElementException("Borrower not found !"));
     }
 }

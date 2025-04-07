@@ -24,7 +24,7 @@ public class Borrower extends BaseEntity {
     @ValidCountryCode
     private String countryCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
@@ -40,6 +40,9 @@ public class Borrower extends BaseEntity {
         this.company = company;
         this.profilePictureUrl = profilePictureUrl;
         this.aadharUrl = aadharUrl;
+    }
+
+    public Borrower() {
     }
 
     public String getFirstName() {
