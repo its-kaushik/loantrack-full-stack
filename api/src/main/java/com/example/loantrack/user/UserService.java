@@ -1,6 +1,7 @@
 package com.example.loantrack.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -15,10 +16,11 @@ public class UserService {
     }
 
     public User registerUser(User user) {
-        if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
-            throw new IllegalArgumentException("Phone number already exists");
+        try {
+            return userRepository.save(user); // Let the DB handle the insert and uniqueness check
+        } catch (DataIntegrityViolationException ex) {
+            throw new IllegalArgumentException("Phone number already exists", ex); // Handle the exception
         }
-        return userRepository.save(user);
     }
 
     public User getUserByPhoneNumber(String phoneNumber) {
